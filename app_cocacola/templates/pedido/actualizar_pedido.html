@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Actualizar Pedido{% endblock %}
+{% block content %}
+<div style="max-width:900px;margin:20px auto;padding:18px;background:#fff8f8;border-radius:8px;">
+  <h3 style="color:#b30000;">Editar Pedido #{{ pedido.id }}</h3>
+
+  <form method="post" action="{% url 'realizar_actualizacion_pedido' pedido.id %}">
+    {% csrf_token %}
+
+    <label>Numero de pedido</label>
+    <input name="numero_pedido" class="form-control" value="{{ pedido.numero_pedido }}">
+
+    <label>Cliente</label>
+    <select name="cliente" class="form-select">
+      {% for c in clientes %}
+        <option value="{{ c.id }}" {% if pedido.cliente.id == c.id %}selected{% endif %}>{{ c.nombre }} {{ c.apellido }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Productos (Ctrl/Cmd para seleccionar varios)</label>
+    <select name="productos" class="form-select" multiple size="6">
+      {% for p in productos %}
+        <option value="{{ p.id }}" {% if p in pedido.productos.all %}selected{% endif %}>{{ p.nombre }} - ${{ p.precio }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Fecha de entrega</label>
+    <input type="date" name="fecha_entrega" class="form-control" value="{{ pedido.fecha_entrega|default_if_none:'' }}">
+
+    <label>Dirección de envío</label>
+    <input name="direccion_envio" class="form-control" value="{{ pedido.direccion_envio }}">
+
+    <label>Método de pago</label>
+    <select name="metodo_pago" class="form-select">
+      <option value="Efectivo" {% if pedido.metodo_pago == "Efectivo" %}selected{% endif %}>Efectivo</option>
+      <option value="Tarjeta" {% if pedido.metodo_pago == "Tarjeta" %}selected{% endif %}>Tarjeta</option>
+      <option value="Transferencia" {% if pedido.metodo_pago == "Transferencia" %}selected{% endif %}>Transferencia</option>
+    </select>
+
+    <label>Estado</label>
+    <select name="estado" class="form-select">
+      <option value="Pendiente" {% if pedido.estado == "Pendiente" %}selected{% endif %}>Pendiente</option>
+      <option value="Enviado" {% if pedido.estado == "Enviado" %}selected{% endif %}>Enviado</option>
+      <option value="Entregado" {% if pedido.estado == "Entregado" %}selected{% endif %}>Entregado</option>
+      <option value="Cancelado" {% if pedido.estado == "Cancelado" %}selected{% endif %}>Cancelado</option>
+    </select>
+
+    <label>Observaciones</label>
+    <textarea name="observaciones" class="form-control" rows="3">{{ pedido.observaciones }}</textarea>
+
+    <label>Total (manual)</label>
+    <input name="total" class="form-control" value="{{ pedido.total }}">
+
+    <div style="margin-top:12px;">
+      <button class="btn btn-primary">Guardar cambios</button>
+      <a class="btn btn-secondary" href="{% url 'ver_pedido' %}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

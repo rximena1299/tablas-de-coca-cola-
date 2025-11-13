@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Ver Pedidos{% endblock %}
+
+{% block content %}
+<div style="max-width:1000px;margin:20px auto;">
+  <h3 style="color:#b30000;">Lista de Pedidos</h3>
+  <a class="btn btn-success mb-3" href="{% url 'agregar_pedido' %}">+ Agregar Pedido</a>
+
+  <table class="table table-striped" style="width:100%;border-collapse:collapse;">
+    <thead style="background:#fff5f5;">
+      <tr>
+        <th>#</th>
+        <th>N° Pedido</th>
+        <th>Cliente</th>
+        <th>Productos</th>
+        <th>Fecha pedido</th>
+        <th>Fecha entrega</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pedido in pedidos %}
+      <tr>
+        <td>{{ pedido.id }}</td>
+        <td>{{ pedido.numero_pedido }}</td>
+        <td>{{ pedido.cliente }}</td>
+        <td>
+          {% for prod in pedido.productos.all %}
+            {{ prod.nombre_producto }} (${{ prod.precio_unitario }}){% if not forloop.last %}, {% endif %}
+          {% empty %}
+            <span style="color:#888;">—</span>
+          {% endfor %}
+        </td>
+        <td>{{ pedido.fecha_pedido }}</td>
+        <td>{{ pedido.fecha_entrega }}</td>
+        <td>${{ pedido.total }}</td>
+        <td>{{ pedido.estado }}</td>
+        <td>
+          <a class="btn btn-sm btn-warning" href="{% url 'actualizar_pedido' pedido.id %}">Editar</a>
+          <a class="btn btn-sm btn-danger" href="{% url 'borrar_pedido' pedido.id %}">Borrar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="9" style="text-align:center;color:#888;">No hay pedidos registrados.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

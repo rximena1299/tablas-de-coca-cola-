@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Agregar Pedido{% endblock %}
+{% block content %}
+<div style="max-width:900px;margin:20px auto;padding:18px;background:#fff8f8;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+  <h3 style="color:#b30000;">Agregar Pedido</h3>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <label>Numero de pedido</label>
+    <input name="numero_pedido" class="form-control" required>
+
+    <label>Cliente</label>
+    <select name="cliente" class="form-select">
+      <option value="">-- Seleccionar cliente --</option>
+      {% for c in clientes %}
+        <option value="{{ c.id }}">{{ c.nombre }} {{ c.apellido }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Productos (selección múltiple)</label>
+    <select name="productos" class="form-select" multiple size="6">
+      {% for p in productos %}
+        <option value="{{ p.id }}">{{ p.nombre }} - ${{ p.precio }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Fecha de entrega</label>
+    <input type="date" name="fecha_entrega" class="form-control">
+
+    <label>Dirección de envío</label>
+    <input name="direccion_envio" class="form-control">
+
+    <label>Método de pago</label>
+    <select name="metodo_pago" class="form-select">
+      <option value="Efectivo">Efectivo</option>
+      <option value="Tarjeta">Tarjeta</option>
+      <option value="Transferencia">Transferencia</option>
+    </select>
+
+    <label>Estado</label>
+    <select name="estado" class="form-select">
+      <option value="Pendiente">Pendiente</option>
+      <option value="Enviado">Enviado</option>
+      <option value="Entregado">Entregado</option>
+      <option value="Cancelado">Cancelado</option>
+    </select>
+
+    <label>Observaciones</label>
+    <textarea name="observaciones" class="form-control" rows="3"></textarea>
+
+    <label>Total (escribe manualmente)</label>
+    <input name="total" class="form-control" placeholder="0.00">
+
+    <div style="margin-top:12px;">
+      <button class="btn btn-primary">Guardar Pedido</button>
+      <a class="btn btn-secondary" href="{% url 'ver_pedido' %}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
